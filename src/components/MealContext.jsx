@@ -4,9 +4,8 @@ import axios from 'axios';
 const MealContext = createContext();
 export const useMealContext = () => useContext(MealContext);
 
-// 🎯 Replace with your actual Spoonacular API Key
-const API_KEY = 'af8b05309ed7423b8bc0bd65281f715b';
-const API_URL = `https://api.spoonacular.com/recipes/random?number=7&tags=dinner&apiKey=${API_KEY}`;
+const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
+const API_URL = `https://api.spoonacular.com/recipes/random?number=1&tags=dinner&apiKey=${API_KEY}`;
 
 export const MealProvider = ({ children }) => {
   const [meals, setMeals] = useState([]);
