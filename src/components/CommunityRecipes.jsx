@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useMealContext } from './MealContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-const CommunityRecipes = () => {
-  const { communityRecipes, addToCurrentPlan, loading, error } = useMealContext();
+const CommunityRecipes = memo(() => {
+  const { communityRecipes, addToCurrentPlan, isLoading, error } = useMealContext();
 
   return (
     <div className="bg-gray-800 text-white p-4">
       <h2 className="text-xl font-bold mb-4">🌐 Community Recipes</h2>
-      {loading && <p className="text-yellow-500">Loading Community Recipes...</p>}
+      {isLoading && <p className="text-yellow-500">Loading Community Recipes...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {communityRecipes.map((recipe, index) => (
         <Card key={index} className='bg-gray-700 rounded-lg shadow-lg border border-yellow-500 mb-2'>
@@ -29,6 +29,6 @@ const CommunityRecipes = () => {
       ))}
     </div>
   );
-};
+});
 
 export default CommunityRecipes;
