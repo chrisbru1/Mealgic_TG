@@ -6,8 +6,6 @@ import axios from 'axios';
 const MealContext = createContext();
 export const useMealContext = () => useContext(MealContext);
 
-const API_URL = 'https://api.example.com/community-recipes';
-
 const fetchCommunityRecipes = async () => {
   console.log("🌐 Community Recipes is coming soon!");
   return [];
