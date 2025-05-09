@@ -6,7 +6,6 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
 const API_URL = `https://api.spoonacular.com/recipes/random?number=1&tags=dinner&apiKey=${API_KEY}`;
 
-// Mana icons for different meal types
 const manaIcons = {
   beef: '🥩',
   poultry: '🍗',
@@ -20,7 +19,6 @@ const CurrentWeekView = () => {
   if (loading) return <p className="text-yellow-500">Loading meals for the week...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  // 🗑️ Discard and replace with a new meal
   const discardAndReplace = async (index) => {
     try {
       console.log("🔄 Discarding meal at index:", index);
@@ -45,7 +43,6 @@ const CurrentWeekView = () => {
     }
   };
 
-  // 🔎 Detect the type based on keywords
   const detectMealType = (title) => {
     const lowerTitle = title.toLowerCase();
     if (lowerTitle.includes('beef') || lowerTitle.includes('steak')) return 'beef';
@@ -59,16 +56,14 @@ const CurrentWeekView = () => {
       {meals.map((meal, index) => (
         <Card key={index} className="relative">
           <CardContent>
-            <div className='flex justify-between items-center mb-2'>
-              <h2 className='mtg-title'>{meal.name}</h2>
-              <span className="text-2xl">{manaIcons[meal.type]}</span>
-            </div>
+            <div className="mtg-mana">{manaIcons[meal.type]}</div>
+            <h2 className='mtg-title'>{meal.name}</h2>
             {meal.image && (
-              <img src={meal.image} alt={meal.name} className="w-full h-40 object-cover rounded-md mb-2" />
+              <img src={meal.image} alt={meal.name} className="mtg-image" />
             )}
             <p className='mtg-description mb-2'>{meal.description}</p>
             {meal.link && (
-              <a href={meal.link} target="_blank" rel="noopener noreferrer" className="text-yellow-300 underline">
+              <a href={meal.link} target="_blank" rel="noopener noreferrer" className="text-yellow-500 underline">
                 View Recipe
               </a>
             )}
