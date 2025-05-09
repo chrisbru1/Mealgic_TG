@@ -9,15 +9,8 @@ export const useMealContext = () => useContext(MealContext);
 const API_URL = 'https://api.example.com/community-recipes';
 
 const fetchCommunityRecipes = async () => {
-  try {
-    const response = await axios.get('https://api.example.com/community-recipes');
-    console.log("API Response: ", response);
-    return response.data;
-  } catch (error) {
-    console.error("API Fetch Error: ", error);
-    alert("Failed to fetch community recipes. Please check your API endpoint.");
-    return [];
-  }
+  console.log("🌐 Community Recipes is coming soon!");
+  return [];
 };
 
 export const MealProvider = ({ children }) => {
