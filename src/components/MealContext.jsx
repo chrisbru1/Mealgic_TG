@@ -12,17 +12,27 @@ export const MealProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch 7 random dinner recipes
+  // Fetch one meal 7 times
   const fetchDinnerRecipes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(API_URL);
-      const recipes = response.data.recipes.map(recipe => ({
-        name: recipe.title,
-        description: recipe.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
-        link: recipe.sourceUrl,
-        image: recipe.image
-      }));
+      const promises = Array.from({ length: 7 }).map(() =>
+        axios.get(API_URL)
+      );
+      const results = await Promise.all(promises);
+
+      // Map results into meal objects
+      const recipes = results.map((response) => {
+        const recipe = response.data.recipes[0];
+        return {
+          name: recipe.title,
+          description: recipe.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
+          link: recipe.sourceUrl,
+          image: recipe.image,
+          type: detectMealType(recipe.title),
+        };
+      });
+
       setMeals(recipes);
     } catch (err) {
       console.error("Failed to fetch recipes: ", err);
@@ -32,12 +42,21 @@ export const MealProvider = ({ children }) => {
     }
   };
 
+  // 🔎 Detect the type based on keywords
+  const detectMealType = (title) => {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('beef') || lowerTitle.includes('steak')) return 'beef';
+    if (lowerTitle.includes('chicken') || lowerTitle.includes('poultry')) return 'poultry';
+    if (lowerTitle.includes('fish') || lowerTitle.includes('salmon') || lowerTitle.includes('tuna')) return 'fish';
+    return 'vegetarian';
+  };
+
   useEffect(() => {
     fetchDinnerRecipes();
   }, []);
 
   return (
-    <MealContext.Provider value={{ meals, loading, error }}>
+    <MealContext.Provider value={{ meals, setMeals, loading, error }}>
       {children}
     </MealContext.Provider>
   );
