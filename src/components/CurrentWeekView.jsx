@@ -25,7 +25,6 @@ const CurrentWeekView = () => {
     try {
       console.log("🔄 Discarding meal at index:", index);
       const response = await axios.get(API_URL);
-      console.log("🔍 Response from Spoonacular:", response.data);
 
       if (response.data.recipes.length > 0) {
         const newMeal = response.data.recipes[0];
@@ -36,7 +35,7 @@ const CurrentWeekView = () => {
           image: newMeal.image,
           type: detectMealType(newMeal.title)
         };
-        
+
         const updatedMeals = [...meals];
         updatedMeals[index] = newRecipe;
         setMeals(updatedMeals);
