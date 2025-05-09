@@ -14,8 +14,8 @@ const WeeklyMealPlanner = () => {
           <Card className="bg-gray-700 rounded-lg shadow-lg border border-yellow-500 mb-2">
             <CardContent>
               <h2 className='text-xl font-bold text-yellow-400'>Saved Meal Plans (Coming Soon)</h2>
-              <p className='italic text-sm'>Manage your saved plans and swipe through them easily.</p>
-            </CardContent>
+              <p className='italic text-sm'>Manage your saved plans and swipe through them easily.</p>;
+            </CardContent>;
           </Card>
         </div>
 
