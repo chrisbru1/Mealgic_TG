@@ -1,0 +1,45 @@
+.mtg-card {
+  width: 300px;
+  height: 450px;
+  background-color: #f8f4e3;
+  border-radius: 10px;
+  border: 2px solid #4a3f35;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin: 10px;
+}
+
+.mtg-content {
+  padding: 10px;
+  font-family: 'Beleren Bold', serif;
+}
+
+.mtg-title {
+  font-family: 'Beleren Bold', serif;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.mtg-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid #4a3f35;
+}
+
+.mtg-description {
+  font-size: 0.9rem;
+  color: #4a3f35;
+  margin-top: 5px;
+  text-align: justify;
+}
+
+.mtg-mana {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+}
