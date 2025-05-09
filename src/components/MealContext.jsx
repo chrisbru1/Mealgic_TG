@@ -4,26 +4,27 @@ import axios from 'axios';
 const MealContext = createContext();
 export const useMealContext = () => useContext(MealContext);
 
-// API Endpoint for random recipes
-const API_URL = 'https://www.themealdb.com/api/json/v1/1/random.php';
+// 🎯 Replace with your actual Spoonacular API Key
+const API_KEY = 'af8b05309ed7423b8bc0bd65281f715b';
+const API_URL = `https://api.spoonacular.com/recipes/random?number=7&tags=dinner&apiKey=${API_KEY}`;
 
 export const MealProvider = ({ children }) => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch 7 random meals
-  const fetchRandomMeals = async () => {
+  // Fetch 7 random dinner recipes
+  const fetchDinnerRecipes = async () => {
     setLoading(true);
     try {
-      const promises = Array(7).fill().map(() => axios.get(API_URL));
-      const responses = await Promise.all(promises);
-      const randomMeals = responses.map(res => ({
-        name: res.data.meals[0].strMeal,
-        description: res.data.meals[0].strInstructions.slice(0, 100) + '...',
-        link: res.data.meals[0].strSource || res.data.meals[0].strYoutube,
+      const response = await axios.get(API_URL);
+      const recipes = response.data.recipes.map(recipe => ({
+        name: recipe.title,
+        description: recipe.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
+        link: recipe.sourceUrl,
+        image: recipe.image
       }));
-      setMeals(randomMeals);
+      setMeals(recipes);
     } catch (err) {
       console.error("Failed to fetch recipes: ", err);
       setError("Failed to load recipes. Try again later.");
@@ -32,9 +33,8 @@ export const MealProvider = ({ children }) => {
     }
   };
 
-  // Load recipes on first render
   useEffect(() => {
-    fetchRandomMeals();
+    fetchDinnerRecipes();
   }, []);
 
   return (
