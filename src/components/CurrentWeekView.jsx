@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMealContext } from './MealContext';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from './ui/card'; // Changed to relative path
 import { motion } from 'framer-motion';
 import ReactDOM from 'react-dom';
 
@@ -10,15 +10,16 @@ const CurrentWeekView = () => {
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
-  
+
     ReactDOM.unstable_batchedUpdates(() => {
       const updatedMeals = Array.from(meals);
       const [reorderedItem] = updatedMeals.splice(result.source.index, 1);
       updatedMeals.splice(result.destination.index, 0, reorderedItem);
       setMeals(updatedMeals);
+    });
   };
 
-  
+
   return (
     <div>
       {toastMessage && <div className="bg-green-500 text-white p-2 mb-2 rounded">{toastMessage}</div>}
@@ -52,3 +53,25 @@ const CurrentWeekView = () => {
 };
 
 export default CurrentWeekView;
+```
+
+**Key Change:**
+
+I've changed this import statement:
+
+```javascript
+import { Card, CardContent } from '@/components/ui/card';
+```
+
+To use a relative path:
+
+```javascript
+import { Card, CardContent } from './ui/card';
+```
+
+**After making this change:**
+
+1.  **Save:** Save the  `CurrentWeekView.jsx`  file with the corrected import path.
+2.  **Commit:** Commit the changes to your Git repository.
+3.  **Push:** Push the changes to your GitHub repository.
+4.  **Vercel will redeploy:** Vercel should automatically start a new deployment with the corrected import pat
