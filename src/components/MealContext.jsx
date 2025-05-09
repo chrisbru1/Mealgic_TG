@@ -10,11 +10,13 @@ const API_URL = 'https://api.example.com/community-recipes';
 
 const fetchCommunityRecipes = async () => {
   try {
-    const { data } = await axios.get(API_URL);
-    return data;
+    const response = await axios.get('https://api.example.com/community-recipes');
+    console.log("API Response: ", response);
+    return response.data;
   } catch (error) {
-    console.error("Failed to fetch community recipes:", error);
-    throw error;
+    console.error("API Fetch Error: ", error);
+    alert("Failed to fetch community recipes. Please check your API endpoint.");
+    return [];
   }
 };
 
