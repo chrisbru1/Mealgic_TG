@@ -1,59 +1,45 @@
-// MealContext.jsx
-import React, { useState, createContext, useContext, useMemo } from 'react';
-import { useQuery } from 'react-query';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 const MealContext = createContext();
 export const useMealContext = () => useContext(MealContext);
 
-const fetchCommunityRecipes = async () => {
-  console.log("🌐 Community Recipes is coming soon!");
-  return [];
-};
+// API Endpoint for random recipes
+const API_URL = 'https://www.themealdb.com/api/json/v1/1/random.php';
 
 export const MealProvider = ({ children }) => {
   const [meals, setMeals] = useState([]);
-  const [toastMessage, setToastMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Use React Query to handle community recipes fetch
-  const {
-    data: communityRecipes = [],
-    isLoading,
-    error,
-  } = useQuery('communityRecipes', fetchCommunityRecipes, {
-    staleTime: 1000 * 60 * 5,   // Cache data for 5 minutes
-    cacheTime: 1000 * 60 * 30,  // Keep cache for 30 minutes
-    retry: 2,                   // Retry twice if the request fails
-    refetchOnWindowFocus: false // Do not refetch when window is focused
-  });
-
-  const addToCurrentPlan = (recipe) => {
-    setMeals((prevMeals) => [...prevMeals, recipe]);
-    setToastMessage(`"${recipe.name}" added to your weekly plan! ✅`);
-    setTimeout(() => setToastMessage(''), 3000);
+  // Fetch 7 random meals
+  const fetchRandomMeals = async () => {
+    setLoading(true);
+    try {
+      const promises = Array(7).fill().map(() => axios.get(API_URL));
+      const responses = await Promise.all(promises);
+      const randomMeals = responses.map(res => ({
+        name: res.data.meals[0].strMeal,
+        description: res.data.meals[0].strInstructions.slice(0, 100) + '...',
+        link: res.data.meals[0].strSource || res.data.meals[0].strYoutube,
+      }));
+      setMeals(randomMeals);
+    } catch (err) {
+      console.error("Failed to fetch recipes: ", err);
+      setError("Failed to load recipes. Try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const value = useMemo(
-    () => ({
-      meals,
-      setMeals,
-      communityRecipes,
-      isLoading,
-      error,
-      addToCurrentPlan,
-      toastMessage,
-    }),
-    [meals, communityRecipes, isLoading, error, toastMessage]
-  );
+  // Load recipes on first render
+  useEffect(() => {
+    fetchRandomMeals();
+  }, []);
 
   return (
-    <MealContext.Provider value={value}>
+    <MealContext.Provider value={{ meals, loading, error }}>
       {children}
-      {toastMessage && (
-        <div className="fixed bottom-5 right-5 bg-green-500 text-white p-3 rounded-md shadow-lg">
-          {toastMessage}
-        </div>
-      )}
     </MealContext.Provider>
   );
 };
