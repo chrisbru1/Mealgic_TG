@@ -14,8 +14,8 @@ const WeeklyMealPlanner = () => {
           <Card className="bg-gray-700 rounded-lg shadow-lg border border-yellow-500 mb-2">
             <CardContent>
               <h2 className='text-xl font-bold text-yellow-400'>Saved Meal Plans (Coming Soon)</h2>
-              <p className='italic text-sm'>Manage your saved plans and swipe through them easily.</p>;
-            </CardContent>;
+              <p className='italic text-sm'>Manage your saved plans and swipe through them easily.</p>
+            </CardContent>
           </Card>
         </div>
 
@@ -34,25 +34,9 @@ const WeeklyMealPlanner = () => {
 export default WeeklyMealPlanner;
 ```
 
-**Key Change:**
+**Key Points**
 
-I've changed this import statement:
+* **JSX and Semicolons:** You don't typically need semicolons after JSX elements (like `<p>...</p>`, `<CardContent>...</CardContent>`).
+* **Standard Practice:** Removing these unnecessary semicolons will align your code with standard React/JavaScript practices.
 
-```javascript
-import { Card, CardContent } from '@/components/ui/card';
-```
-
-To use a relative path:
-
-```javascript
-import { Card, CardContent } from './components/ui/card';
-```
-
-This tells React to look for the `card` and `cardContent` components in the `components/ui` folder, relative to the current file.
-
-**After making this change:**
-
-1.  **Save:** Save the  `WeeklyMealPlanner.jsx`  file.
-2.  **Commit:** Commit the changes to your Git repository.
-3.  **Push:** Push the changes to your GitHub repository.
-4.  **Vercel will redeploy:** Vercel should automatically start a new deployment with the corrected import pat
+With this correction, your code should be free of the ESLint errors related to missing semicolo
