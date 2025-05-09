@@ -2,7 +2,7 @@ import React from 'react';
 import { MealProvider } from './MealContext';
 import CurrentWeekView from './CurrentWeekView';
 import CommunityRecipes from './CommunityRecipes';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from './components/ui/card'; // Changed to relative path
 
 const WeeklyMealPlanner = () => {
   return (
@@ -32,3 +32,27 @@ const WeeklyMealPlanner = () => {
 };
 
 export default WeeklyMealPlanner;
+```
+
+**Key Change:**
+
+I've changed this import statement:
+
+```javascript
+import { Card, CardContent } from '@/components/ui/card';
+```
+
+To use a relative path:
+
+```javascript
+import { Card, CardContent } from './components/ui/card';
+```
+
+This tells React to look for the `card` and `cardContent` components in the `components/ui` folder, relative to the current file.
+
+**After making this change:**
+
+1.  **Save:** Save the  `WeeklyMealPlanner.jsx`  file.
+2.  **Commit:** Commit the changes to your Git repository.
+3.  **Push:** Push the changes to your GitHub repository.
+4.  **Vercel will redeploy:** Vercel should automatically start a new deployment with the corrected import pat
