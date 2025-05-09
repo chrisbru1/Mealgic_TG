@@ -34,9 +34,18 @@ const WeeklyMealPlanner = () => {
 export default WeeklyMealPlanner;
 ```
 
-**Key Points**
+**Changes:**
 
-* **JSX and Semicolons:** You don't typically need semicolons after JSX elements (like `<p>...</p>`, `<CardContent>...</CardContent>`).
-* **Standard Practice:** Removing these unnecessary semicolons will align your code with standard React/JavaScript practices.
+The key change is in this import statement:
 
-With this correction, your code should be free of the ESLint errors related to missing semicolo
+```javascript
+import { Card, CardContent } from '@/components/ui/card';
+```
+
+To use a relative path:
+
+```javascript
+import { Card, CardContent } from './components/ui/card';
+```
+
+This tells React to look for the  `card`  and  `cardContent`  components in the  `components/ui`  folder, relative to the  `WeeklyMealPlanner.jsx`  fi
