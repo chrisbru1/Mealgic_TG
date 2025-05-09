@@ -1,8 +1,9 @@
 import React from 'react';
+import './Card.css';
 
 export const Card = ({ children, className }) => {
   return (
-    <div className={`bg-gray-800 text-white p-4 rounded-lg shadow-lg border-4 border-yellow-500 mtg-frame ${className}`}>
+    <div className={`mtg-card ${className}`}>
       {children}
     </div>
   );
@@ -10,7 +11,7 @@ export const Card = ({ children, className }) => {
 
 export const CardContent = ({ children }) => {
   return (
-    <div className="p-2">
+    <div className="mtg-content">
       {children}
     </div>
   );
