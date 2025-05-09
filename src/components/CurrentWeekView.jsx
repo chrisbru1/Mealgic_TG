@@ -52,7 +52,7 @@ const CurrentWeekView = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="flex space-x-4 overflow-x-auto">
       {meals.map((meal, index) => (
         <Card key={index} className="relative">
           <CardContent>
