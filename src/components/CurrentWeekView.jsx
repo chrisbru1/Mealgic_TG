@@ -3,7 +3,7 @@ import { useMealContext } from './MealContext';
 import { Card, CardContent } from './ui/Card';
 import axios from 'axios';
 
-const API_KEY = 'af8b05309ed7423b8bc0bd65281f715b';
+const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
 const API_URL = `https://api.spoonacular.com/recipes/random?number=1&tags=dinner&apiKey=${API_KEY}`;
 
 // Mana icons for different meal types
@@ -23,18 +23,24 @@ const CurrentWeekView = () => {
   // 🗑️ Discard and replace with a new meal
   const discardAndReplace = async (index) => {
     try {
+      console.log("🔄 Discarding meal at index:", index);
       const response = await axios.get(API_URL);
-      const newMeal = response.data.recipes[0];
-      const newRecipe = {
-        name: newMeal.title,
-        description: newMeal.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
-        link: newMeal.sourceUrl,
-        image: newMeal.image,
-        type: detectMealType(newMeal.title)
-      };
-      const updatedMeals = [...meals];
-      updatedMeals[index] = newRecipe;
-      setMeals(updatedMeals);
+      console.log("🔍 Response from Spoonacular:", response.data);
+
+      if (response.data.recipes.length > 0) {
+        const newMeal = response.data.recipes[0];
+        const newRecipe = {
+          name: newMeal.title,
+          description: newMeal.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
+          link: newMeal.sourceUrl,
+          image: newMeal.image,
+          type: detectMealType(newMeal.title)
+        };
+        
+        const updatedMeals = [...meals];
+        updatedMeals[index] = newRecipe;
+        setMeals(updatedMeals);
+      }
     } catch (err) {
       console.error("Failed to replace the meal", err);
     }
