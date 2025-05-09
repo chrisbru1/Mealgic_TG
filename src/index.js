@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css'; // You might have a global CSS file
-import WeeklyMealPlanner from './WeeklyMealPlanner'; //  <--  Import your main component
+import './index.css'; 
+import WeeklyMealPlanner from './components/WeeklyMealPlanner.jsx'; 
+import CurrentWeekView from './components/CurrentWeekView.jsx';
+import MealContext from './components/MealContext.jsx';
+import CommunityRecipes from './components/CommunityRecipes.jsx';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
