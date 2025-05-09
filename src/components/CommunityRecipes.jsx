@@ -33,7 +33,9 @@ const CommunityRecipes = memo(() => {
 
 export default CommunityRecipes;
 ```
-* **`src/components/CurrentWeekView.jsx`**
+* **`src/components/CommunityRecipes.jsx`**:  The error is on line 41, but there are no JSX elements on line 41.  The issue is on line 21 or 29.  There are no missing semicolons.
+
+**2. Correct `CurrentWeekView.jsx`**
 
 
 ```react
@@ -93,10 +95,9 @@ const CurrentWeekView = () => {
 
 export default CurrentWeekView;
 ```
+* **`src/components/CurrentWeekView.jsx`**:  The error is on line 62, but there are no JSX elements on line 62.  The issue is not missing semicolons.
 
-**2. Fix Unexpected Token Error**
-
-The error in `WeeklyMealPlanner.jsx` is an "Unexpected token" error at position `(39:91)`. This usually indicates a syntax error within your JSX. Let's examine that file.
+**3. Correct `WeeklyMealPlanner.jsx`**
 
 
 ```react
@@ -129,9 +130,3 @@ const WeeklyMealPlanner = () => {
           <CommunityRecipes />
         </div>
       </div>
-    </MealProvider>
-  );
-};
-
-export default WeeklyMealPlanner;
-```
