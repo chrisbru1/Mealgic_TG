@@ -3,8 +3,16 @@ import { useMealContext } from './MealContext';
 import { Card, CardContent } from './ui/Card';
 import axios from 'axios';
 
-const API_KEY = 'YOUR_SPOONACULAR_API_KEY';
+const API_KEY = 'af8b05309ed7423b8bc0bd65281f715b';
 const API_URL = `https://api.spoonacular.com/recipes/random?number=1&tags=dinner&apiKey=${API_KEY}`;
+
+// Mana icons for different meal types
+const manaIcons = {
+  beef: '🥩',
+  poultry: '🍗',
+  fish: '🐟',
+  vegetarian: '🥦'
+};
 
 const CurrentWeekView = () => {
   const { meals, setMeals, loading, error } = useMealContext();
@@ -21,7 +29,8 @@ const CurrentWeekView = () => {
         name: newMeal.title,
         description: newMeal.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
         link: newMeal.sourceUrl,
-        image: newMeal.image
+        image: newMeal.image,
+        type: detectMealType(newMeal.title)
       };
       const updatedMeals = [...meals];
       updatedMeals[index] = newRecipe;
@@ -31,6 +40,15 @@ const CurrentWeekView = () => {
     }
   };
 
+  // 🔎 Detect the type based on keywords
+  const detectMealType = (title) => {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('beef') || lowerTitle.includes('steak')) return 'beef';
+    if (lowerTitle.includes('chicken') || lowerTitle.includes('poultry')) return 'poultry';
+    if (lowerTitle.includes('fish') || lowerTitle.includes('salmon') || lowerTitle.includes('tuna')) return 'fish';
+    return 'vegetarian';
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4">
       {meals.map((meal, index) => (
@@ -38,6 +56,7 @@ const CurrentWeekView = () => {
           <CardContent>
             <div className='flex justify-between items-center mb-2'>
               <h2 className='mtg-title'>{meal.name}</h2>
+              <span className="text-2xl">{manaIcons[meal.type]}</span>
             </div>
             {meal.image && (
               <img src={meal.image} alt={meal.name} className="w-full h-40 object-cover rounded-md mb-2" />
