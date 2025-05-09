@@ -2,7 +2,7 @@ import React from 'react';
 import { MealProvider } from './MealContext';
 import CurrentWeekView from './CurrentWeekView';
 import CommunityRecipes from './CommunityRecipes';
-import { Card, CardContent } from './components/ui/card'; // Changed to relative path
+import { Card, CardContent } from './ui/Card';
 
 const WeeklyMealPlanner = () => {
   return (
@@ -32,20 +32,3 @@ const WeeklyMealPlanner = () => {
 };
 
 export default WeeklyMealPlanner;
-```
-
-**Changes:**
-
-The key change is in this import statement:
-
-```javascript
-import { Card, CardContent } from '@/components/ui/card';
-```
-
-To use a relative path:
-
-```javascript
-import { Card, CardContent } from './components/ui/card';
-```
-
-This tells React to look for the  `card`  and  `cardContent`  components in the  `components/ui`  folder, relative to the  `WeeklyMealPlanner.jsx`  fi
