@@ -4,7 +4,7 @@ import CurrentWeekView from './CurrentWeekView';
 import { fetchGroceryList } from './groceryScraper';
 
 const WeeklyMealPlanner = () => {
-  const [groceryList, setGroceryList] = useState([]);
+  const [groceryList, setGroceryList] = useState({});
   const { meals } = useMealContext();
 
   const generateGroceryList = async () => {
@@ -32,14 +32,22 @@ const WeeklyMealPlanner = () => {
         </div>
 
         {/* Display Grocery List */}
-        {groceryList.length > 0 && (
+        {Object.keys(groceryList).length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-bold mb-4">🛒 Grocery List</h2>
-            <ul className="list-disc pl-5">
-              {groceryList.map((item, index) => (
-                <li key={index}>{item.quantity} x {item.name}</li>
-              ))}
-            </ul>
+
+            {Object.entries(groceryList).map(([category, items], index) => (
+              <div key={index} className="mb-4">
+                <h3 className="text-xl font-semibold text-yellow-400 capitalize mb-2">
+                  {category}
+                </h3>
+                <ul className="list-disc pl-5">
+                  {items.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         )}
       </div>
