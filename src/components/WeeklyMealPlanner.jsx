@@ -1,12 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CurrentWeekView from './CurrentWeekView';
 import { useMealContext } from './MealContext';
 import { fetchGroceryList } from './groceryScraper';
+import fetchRecipes from '../api/fetchRecipes';
 
 const WeeklyMealPlanner = () => {
   const [groceryList, setGroceryList] = useState({});
-  const { meals, loading, error } = useMealContext();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [meals, setMeals] = useState([]);
 
+  // ✅ Fetch recipes when component mounts
+  useEffect(() => {
+    const loadRecipes = async () => {
+      try {
+        console.log("🔄 Fetching recipes from API...");
+        const response = await fetchRecipes();
+        
+        if (response.error) {
+          console.error("❌ API Error:", response.error);
+          setError(response.error);
+          return;
+        }
+
+        console.log("🍲 Recipes fetched:", response);
+        setMeals(response);
+      } catch (err) {
+        console.error("❌ Error fetching recipes:", err.message);
+        setError("Failed to fetch recipes");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRecipes();
+  }, []);
+
+  // ✅ Generate the Grocery List
   const generateGroceryList = async () => {
     if (meals.length === 0) {
       console.error("❌ No meals available to generate a grocery list.");
@@ -22,6 +52,7 @@ const WeeklyMealPlanner = () => {
     }
   };
 
+  // ✅ Render the UI
   return (
     <div className="bg-gray-800 min-h-screen text-white p-4">
       <h1 className="text-center text-3xl font-bold mb-6">📜 Weekly Meal Spellbook 📜</h1>
@@ -33,7 +64,7 @@ const WeeklyMealPlanner = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <CurrentWeekView />
+          <CurrentWeekView meals={meals} />
         )}
       </div>
 
