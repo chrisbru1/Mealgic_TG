@@ -12,28 +12,45 @@ export const MealProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch one meal 7 times
+  // 🔄 Fetch one meal, check for duplicates, and push to list
+  const fetchUniqueMeal = async (existingMeals) => {
+    try {
+      let isUnique = false;
+      let newRecipe = null;
+
+      while (!isUnique) {
+        const response = await axios.get(API_URL);
+        const recipe = response.data.recipes[0];
+
+        // Check if the recipe title already exists
+        if (!existingMeals.some((meal) => meal.name === recipe.title)) {
+          newRecipe = {
+            name: recipe.title,
+            description: recipe.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
+            link: recipe.sourceUrl,
+            image: recipe.image,
+            type: detectMealType(recipe.title),
+          };
+          isUnique = true;
+        }
+      }
+
+      return newRecipe;
+    } catch (err) {
+      console.error("Failed to fetch a unique meal", err);
+      return null;
+    }
+  };
+
+  // 🔄 Fetch 7 unique meals
   const fetchDinnerRecipes = async () => {
     setLoading(true);
     try {
-      const promises = Array.from({ length: 7 }).map(() =>
-        axios.get(API_URL)
-      );
+      const promises = Array.from({ length: 7 }).map(() => fetchUniqueMeal(meals));
       const results = await Promise.all(promises);
 
-      // Map results into meal objects
-      const recipes = results.map((response) => {
-        const recipe = response.data.recipes[0];
-        return {
-          name: recipe.title,
-          description: recipe.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
-          link: recipe.sourceUrl,
-          image: recipe.image,
-          type: detectMealType(recipe.title),
-        };
-      });
-
-      setMeals(recipes);
+      // Filter out any nulls
+      setMeals(results.filter(Boolean));
     } catch (err) {
       console.error("Failed to fetch recipes: ", err);
       setError("Failed to load recipes. Try again later.");
