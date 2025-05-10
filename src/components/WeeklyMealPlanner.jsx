@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CurrentWeekView from './CurrentWeekView';
-import { fetchGroceryList } from './groceryScraper';
 import { useMealContext } from './MealContext';
+import { fetchGroceryList } from './groceryScraper';
 
 const WeeklyMealPlanner = () => {
   const [groceryList, setGroceryList] = useState({});
