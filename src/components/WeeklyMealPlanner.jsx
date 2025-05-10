@@ -6,22 +6,36 @@ import { fetchGroceryList } from './groceryScraper';
 const WeeklyMealPlanner = () => {
   const [groceryList, setGroceryList] = useState({});
 
-  // ✅ Correctly use context inside the Provider
+  // ✅ Context Hook
   const { meals, loading, error } = useMealContext();
 
+  // ✅ Debugging: Check if context is available
+  console.log("🍲 Meals from Context:", meals);
+  if (!meals) {
+    console.error("❌ Meals is undefined. Context is not wrapping properly.");
+  }
+
+  // ✅ Generate the Grocery List
   const generateGroceryList = async () => {
     const list = await fetchGroceryList(meals);
     setGroceryList(list);
   };
 
+  // ✅ Render
   return (
-    <MealProvider> {/* ✅ Wrapping inside MealProvider */}
+    <MealProvider>
       <div className="bg-gray-800 min-h-screen text-white p-4">
         <h1 className="text-center text-3xl font-bold mb-6">📜 Weekly Meal Spellbook 📜</h1>
 
         {/* Horizontal Scroll View */}
         <div className="overflow-x-auto whitespace-nowrap pb-6">
-          <CurrentWeekView />
+          {loading ? (
+            <p className="text-yellow-500">Loading meals for the week...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <CurrentWeekView />
+          )}
         </div>
 
         {/* Generate Grocery List */}
