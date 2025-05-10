@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const CATEGORIES = {
-  produce: ["lettuce", "tomato", "onion", "garlic", "potato", "carrot", "pepper", "spinach", "broccoli"],
-  meat: ["chicken", "beef", "pork", "steak", "turkey", "sausage"],
-  seafood: ["salmon", "tuna", "shrimp", "crab", "lobster"],
-  dairy: ["milk", "cheese", "butter", "cream", "yogurt"],
-  grains: ["rice", "pasta", "bread", "quinoa", "flour"],
-  spices: ["salt", "pepper", "cinnamon", "paprika", "oregano", "basil"]
+  produce: ["lettuce", "tomato", "onion", "garlic", "potato", "carrot", "pepper", "spinach", "broccoli", "avocado"],
+  meat: ["chicken", "beef", "pork", "steak", "turkey", "sausage", "bacon", "ham"],
+  seafood: ["salmon", "tuna", "shrimp", "crab", "lobster", "cod"],
+  dairy: ["milk", "cheese", "butter", "cream", "yogurt", "eggs"],
+  grains: ["rice", "pasta", "bread", "quinoa", "flour", "cereal"],
+  spices: ["salt", "pepper", "cinnamon", "paprika", "oregano", "basil", "garlic powder"]
 };
 
 const detectCategory = (ingredient) => {
@@ -36,16 +36,26 @@ export const fetchGroceryList = async (recipes) => {
     
     try {
       const response = await axios.get(`/api/scrapeIngredients?url=${encodeURIComponent(recipe.link)}`);
+      
+      // 📝 DEBUG: Log the response
+      console.log(`✅ Ingredients fetched from ${recipe.link}:`, response.data.ingredients);
+
       const ingredients = response.data.ingredients;
+
+      if (!ingredients || ingredients.length === 0) {
+        console.warn(`⚠️ No ingredients found for ${recipe.name}`);
+      }
 
       ingredients.forEach((item) => {
         const category = detectCategory(item);
         ingredientMap[category].push(item);
       });
+
     } catch (error) {
       console.error(`Failed to fetch ingredients for ${recipe.name}:`, error.message);
     }
   }
 
+  console.log("🛒 Final Grocery List:", ingredientMap);
   return ingredientMap;
 };
