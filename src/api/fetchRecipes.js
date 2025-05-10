@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default async function handler(req, res) {
-  // ✅ Check if method is POST
+  // ✅ Only allow POST
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     res.status(405).json({ error: `Method ${req.method} Not Allowed` });
