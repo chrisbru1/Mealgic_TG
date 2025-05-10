@@ -1,47 +1,49 @@
-import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const MealContext = createContext();
 export const useMealContext = () => useContext(MealContext);
 
 export const MealProvider = ({ children }) => {
   const [meals, setMeals] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchDinnerRecipes = async () => {
-    setLoading(true);
-    try {
-      // 🔥 Call GPT for 7 Kid-Friendly Meals
-      const response = await axios.post('https://api.openai.com/v1/completions', {
-        prompt: `Generate 7 kid-friendly dinner recipes with the following requirements:
-        - Diverse proteins: poultry, beef, fish, and vegetarian options
-        - No more than two beef dishes
-        - Include full ingredient lists and preparation steps`,
-        max_tokens: 800,
-        model: 'text-davinci-003'
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/fetchRecipes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: "Generate 7 kid-friendly dinner recipes with diverse proteins."
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("❌ API Error:", errorText);
+          setError("Failed to fetch recipes");
+          return;
         }
-      });
 
-      const recipeData = response.data.choices[0].text;
-      console.log("🍲 Generated Recipes: ", recipeData);
+        const data = await response.json();
+        setMeals(data);
+      } catch (err) {
+        console.error("❌ Error fetching recipes:", err.message);
+        setError("Failed to fetch recipes");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      const parsedRecipes = JSON.parse(recipeData); // assuming it's valid JSON
-      setMeals(parsedRecipes);
-    } catch (err) {
-      console.error("Failed to generate recipes: ", err.message);
-      setError("Failed to generate recipes. Try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchRecipes();
+  }, []);
 
   return (
-    <MealContext.Provider value={{ meals, setMeals, loading, error, fetchDinnerRecipes }}>
+    <MealContext.Provider value={{ meals, loading, error }}>
       {children}
     </MealContext.Provider>
   );
