@@ -19,30 +19,43 @@ const CurrentWeekView = () => {
   if (loading) return <p className="text-yellow-500">Loading meals for the week...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
+  // 🗑️ Discard and replace with a new meal
   const discardAndReplace = async (index) => {
     try {
-      console.log("🔄 Discarding meal at index:", index);
-      const response = await axios.get(API_URL);
+      console.log(`🔄 Discarding meal at index: ${index}`);
+      let isUnique = false;
+      let newRecipe = null;
 
-      if (response.data.recipes.length > 0) {
+      while (!isUnique) {
+        const response = await axios.get(API_URL);
         const newMeal = response.data.recipes[0];
-        const newRecipe = {
-          name: newMeal.title,
-          description: newMeal.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
-          link: newMeal.sourceUrl,
-          image: newMeal.image,
-          type: detectMealType(newMeal.title)
-        };
 
-        const updatedMeals = [...meals];
-        updatedMeals[index] = newRecipe;
-        setMeals(updatedMeals);
+        // Check for duplicates
+        if (!meals.some((meal) => meal.name === newMeal.title)) {
+          newRecipe = {
+            name: newMeal.title,
+            description: newMeal.summary.replace(/<[^>]+>/g, '').slice(0, 100) + '...',
+            link: newMeal.sourceUrl,
+            image: newMeal.image,
+            type: detectMealType(newMeal.title),
+          };
+          isUnique = true;
+        } else {
+          console.warn(`⚠️ Duplicate found: ${newMeal.title}, fetching again...`);
+        }
       }
+
+      // Replace the meal
+      const updatedMeals = [...meals];
+      updatedMeals[index] = newRecipe;
+      setMeals(updatedMeals);
+
     } catch (err) {
       console.error("Failed to replace the meal", err);
     }
   };
 
+  // 🔎 Detect the type based on keywords
   const detectMealType = (title) => {
     const lowerTitle = title.toLowerCase();
     if (lowerTitle.includes('beef') || lowerTitle.includes('steak')) return 'beef';
