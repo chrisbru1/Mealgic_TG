@@ -1,26 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import WeeklyMealPlanner from './components/WeeklyMealPlanner';
-import reportWebVitals from './reportWebVitals';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import './index.css'; 
+import WeeklyMealPlanner from './components/WeeklyMealPlanner.jsx'; 
 
-// Initialize QueryClient
-const queryClient = new QueryClient();
-
-const rootElement = document.getElementById('root');
-
-if (rootElement) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <WeeklyMealPlanner />
-      </QueryClientProvider>
-    </React.StrictMode>
-  );
-} else {
-  console.error("❌ No root element found in index.html");
-}
-
-reportWebVitals();
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    {/* Wrap the entire App with the MealProvider */}
+    <WeeklyMealPlanner />
+  </React.StrictMode>
+);
