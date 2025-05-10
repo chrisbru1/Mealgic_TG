@@ -12,7 +12,6 @@ export const MealProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch 7 meals
   const fetchDinnerRecipes = async () => {
     setLoading(true);
     try {
