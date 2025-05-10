@@ -2,7 +2,32 @@ import React, { useEffect, useState } from 'react';
 import CurrentWeekView from './CurrentWeekView';
 import { useMealContext } from './MealContext';
 import { fetchGroceryList } from './groceryScraper';
-import fetchRecipes from '../api/fetchRecipes';
+const fetchRecipes = async () => {
+  try {
+    const response = await fetch('/api/fetchRecipes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: "Generate 7 kid-friendly dinner recipes with diverse proteins."
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ API Error:", errorText);
+      return null;
+    }
+
+    const data = await response.json();
+    console.log("🍲 Recipes fetched:", data);
+    return data;
+  } catch (err) {
+    console.error("❌ Error fetching recipes:", err.message);
+    return null;
+  }
+};
 
 const WeeklyMealPlanner = () => {
   const [groceryList, setGroceryList] = useState({});
