@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { MealProvider, useMealContext } from './MealContext'; // ✅ Make sure this path is correct
+import { MealProvider, useMealContext } from './MealContext';
 import CurrentWeekView from './CurrentWeekView';
 import { fetchGroceryList } from './groceryScraper';
 
 const WeeklyMealPlanner = () => {
   const [groceryList, setGroceryList] = useState({});
-  const { meals } = useMealContext(); // ✅ This is where it's crashing
+
+  // ✅ Correctly use context inside the Provider
+  const { meals, loading, error } = useMealContext();
 
   const generateGroceryList = async () => {
     const list = await fetchGroceryList(meals);
@@ -16,7 +18,8 @@ const WeeklyMealPlanner = () => {
     <MealProvider> {/* ✅ Wrapping inside MealProvider */}
       <div className="bg-gray-800 min-h-screen text-white p-4">
         <h1 className="text-center text-3xl font-bold mb-6">📜 Weekly Meal Spellbook 📜</h1>
-        
+
+        {/* Horizontal Scroll View */}
         <div className="overflow-x-auto whitespace-nowrap pb-6">
           <CurrentWeekView />
         </div>
