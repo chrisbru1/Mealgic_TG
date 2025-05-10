@@ -1,12 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css'; 
-import WeeklyMealPlanner from './components/WeeklyMealPlanner.jsx'; 
+import ReactDOM from 'react-dom';
+import { MealProvider } from './MealContext';
+import WeeklyMealPlanner from './WeeklyMealPlanner';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    {/* Wrap the entire App with the MealProvider */}
-    <WeeklyMealPlanner />
-  </React.StrictMode>
+    <MealProvider>
+      <WeeklyMealPlanner />
+    </MealProvider>
+  </React.StrictMode>,
+  document.getElementById('root')
 );
