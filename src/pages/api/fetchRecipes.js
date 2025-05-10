@@ -1,3 +1,7 @@
+// src/pages/api/fetchRecipes.js
+import axios from 'axios';
+import 'dotenv/config';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
@@ -13,6 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log("🔄 Sending request to OpenAI API...");
     const response = await axios.post('https://api.openai.com/v1/chat/completions', {
       model: "gpt-3.5-turbo",
       messages: [
@@ -26,12 +31,14 @@ export default async function handler(req, res) {
       }
     });
 
+    console.log("✅ OpenAI API Response:", response.data);
+
     const data = JSON.parse(response.data.choices[0].message.content);
 
-    // ✅ Make sure it's JSON before sending
     if (typeof data === 'object') {
       res.status(200).json(data);
     } else {
+      console.error("❌ Invalid JSON response from OpenAI:", data);
       res.status(500).json({ error: "Invalid JSON response from OpenAI" });
     }
   } catch (error) {
