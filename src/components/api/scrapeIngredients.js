@@ -12,7 +12,6 @@ export default async function handler(req, res) {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
 
-    // Attempt to detect common ingredient selectors
     const ingredientList = [];
     $('li').each((index, element) => {
       const text = $(element).text();
@@ -21,6 +20,7 @@ export default async function handler(req, res) {
       }
     });
 
+    console.log(`✅ Scraped Ingredients for ${url}:`, ingredientList);
     res.status(200).json({ ingredients: ingredientList });
   } catch (error) {
     console.error(`Failed to scrape ${url}:`, error.message);
