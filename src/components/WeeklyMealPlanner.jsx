@@ -1,50 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MealProvider, useMealContext } from './MealContext';
 import CurrentWeekView from './CurrentWeekView';
-import CommunityRecipes from './CommunityRecipes';
-import { Card, CardContent } from './ui/Card';
+import { fetchGroceryList } from './groceryScraper';
 
 const WeeklyMealPlanner = () => {
+  const [groceryList, setGroceryList] = useState([]);
+  const { meals } = useMealContext();
+
+  const generateGroceryList = async () => {
+    const list = await fetchGroceryList(meals);
+    setGroceryList(list);
+  };
+
   return (
     <MealProvider>
       <div className="bg-gray-800 min-h-screen text-white p-4">
         <h1 className="text-center text-3xl font-bold mb-6">📜 Weekly Meal Spellbook 📜</h1>
         
-        {/* Horizontal Scroll View */}
         <div className="overflow-x-auto whitespace-nowrap pb-6">
           <CurrentWeekView />
         </div>
 
-        {/* Save & Export Button */}
+        {/* Generate Grocery List */}
         <div className="mt-10 text-center">
-          <SaveExport />
+          <button
+            onClick={generateGroceryList}
+            className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-400 transition-all"
+          >
+            Generate Grocery List
+          </button>
         </div>
+
+        {/* Display Grocery List */}
+        {groceryList.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-2xl font-bold mb-4">🛒 Grocery List</h2>
+            <ul className="list-disc pl-5">
+              {groceryList.map((item, index) => (
+                <li key={index}>{item.quantity} x {item.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </MealProvider>
-  );
-};
-
-const SaveExport = () => {
-  const { meals } = useMealContext();
-
-  const exportLinks = () => {
-    const links = meals.map((meal) => `${meal.name}: ${meal.link}`).join('\n');
-    const element = document.createElement("a");
-    const file = new Blob([links], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = "WeeklyMealPlan.txt";
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
-  return (
-    <button
-      onClick={exportLinks}
-      className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-400 transition-all"
-    >
-      Save & Export Links
-    </button>
   );
 };
 
