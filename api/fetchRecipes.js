@@ -1,8 +1,9 @@
-// api/fetchRecipes.js
+// src/pages/api/fetchRecipes.js
+
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      // Replace this with your logic
+      // Dummy response for now to test
       const sampleRecipes = [
         { name: "Spaghetti Bolognese", description: "Classic Italian dish with a rich tomato sauce." },
         { name: "Chicken Tikka Masala", description: "Creamy and spicy chicken dish from India." },
