@@ -1,64 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import CurrentWeekView from './CurrentWeekView';
-import { useMealContext } from './MealContext';
 import { fetchGroceryList } from './groceryScraper';
-const fetchRecipes = async () => {
-  try {
-    const response = await fetch('/api/fetchRecipes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: "Generate 7 kid-friendly dinner recipes with diverse proteins."
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ API Error:", errorText);
-      return null;
-    }
-
-    const data = await response.json();
-    console.log("🍲 Recipes fetched:", data);
-    return data;
-  } catch (err) {
-    console.error("❌ Error fetching recipes:", err.message);
-    return null;
-  }
-};
 
 const WeeklyMealPlanner = () => {
+  // ✅ State Management
   const [groceryList, setGroceryList] = useState({});
+  const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [meals, setMeals] = useState([]);
 
-  // ✅ Fetch recipes when component mounts
-  useEffect(() => {
-    const loadRecipes = async () => {
-      try {
-        console.log("🔄 Fetching recipes from API...");
-        const response = await fetchRecipes();
-        
-        if (response.error) {
-          console.error("❌ API Error:", response.error);
-          setError(response.error);
-          return;
-        }
+  // ✅ Fetch recipes on component mount
+  const fetchRecipes = async () => {
+    try {
+      console.log("🔄 Fetching recipes from API...");
+      const response = await fetch('/api/fetchRecipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: "Generate 7 kid-friendly dinner recipes with diverse proteins."
+        })
+      });
 
-        console.log("🍲 Recipes fetched:", response);
-        setMeals(response);
-      } catch (err) {
-        console.error("❌ Error fetching recipes:", err.message);
-        setError("Failed to fetch recipes");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ API Error:", errorText);
+        setError(`Failed to fetch recipes: ${errorText}`);
+        return null;
       }
-    };
 
-    loadRecipes();
+      const data = await response.json();
+      console.log("🍲 Recipes fetched:", data);
+
+      if (Array.isArray(data)) {
+        setMeals(data);
+      } else {
+        console.error("❌ Unexpected response format:", data);
+        setError("Unexpected response format from API");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching recipes:", err.message);
+      setError("Failed to fetch recipes");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch on component mount
+  useEffect(() => {
+    fetchRecipes();
   }, []);
 
   // ✅ Generate the Grocery List
