@@ -1,14 +1,14 @@
 export const fetchGroceryList = async (meals) => {
   try {
-    const response = await fetch('/api/fetchGroceryList', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        meals: meals.map(meal => meal.name)
-      })
-    });
+      const response = await fetch('/api/fetchGroceryList', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      meals: meals.map(meal => meal.name)
+    })
+  });
 
     if (!response.ok) {
       console.error("❌ API Error:", await response.text());
