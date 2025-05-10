@@ -36,7 +36,9 @@ export const fetchGroceryList = async (recipes) => {
     
     try {
       const response = await axios.get(`/api/scrapeIngredients?url=${encodeURIComponent(recipe.link)}`);
-      console.log(`✅ Ingredients fetched from ${recipe.link}:`, response.data.ingredients);
+      
+      // 📝 DEBUG: Log the raw response
+      console.log(`✅ Raw response from API:`, response.data);
 
       const ingredients = response.data.ingredients ?? [];
       
