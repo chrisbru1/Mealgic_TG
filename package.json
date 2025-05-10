@@ -1,7 +1,7 @@
 {
   "name": "mealgic-the-gathering",
   "version": "1.0.0",
-  "description": "A React app for meal planning.",
+  "description": "A Next.js app for meal planning.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,21 +21,12 @@
     "react-swipeable": "^7.0.1",
     "web-vitals": "^5.0.0"
   },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  },
   "eslintConfig": {
     "extends": [
       "next/core-web-vitals"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
     ]
   }
 }
