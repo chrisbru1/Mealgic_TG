@@ -36,14 +36,13 @@ export const fetchGroceryList = async (recipes) => {
     
     try {
       const response = await axios.get(`/api/scrapeIngredients?url=${encodeURIComponent(recipe.link)}`);
-      
-      // 📝 DEBUG: Log the response
       console.log(`✅ Ingredients fetched from ${recipe.link}:`, response.data.ingredients);
 
-      const ingredients = response.data.ingredients;
-
-      if (!ingredients || ingredients.length === 0) {
+      const ingredients = response.data.ingredients ?? [];
+      
+      if (!Array.isArray(ingredients) || ingredients.length === 0) {
         console.warn(`⚠️ No ingredients found for ${recipe.name}`);
+        continue;
       }
 
       ingredients.forEach((item) => {
