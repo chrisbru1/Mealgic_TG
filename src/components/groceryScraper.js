@@ -1,6 +1,28 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
+// 🛒 Ingredient Categories
+const CATEGORIES = {
+  produce: ["lettuce", "tomato", "onion", "garlic", "potato", "carrot", "pepper", "spinach", "broccoli"],
+  meat: ["chicken", "beef", "pork", "steak", "turkey", "sausage"],
+  seafood: ["salmon", "tuna", "shrimp", "crab", "lobster"],
+  dairy: ["milk", "cheese", "butter", "cream", "yogurt"],
+  grains: ["rice", "pasta", "bread", "quinoa", "flour"],
+  spices: ["salt", "pepper", "cinnamon", "paprika", "oregano", "basil"]
+};
+
+// 🕵️ Detect category
+const detectCategory = (ingredient) => {
+  const lowerItem = ingredient.toLowerCase();
+  for (const [category, keywords] of Object.entries(CATEGORIES)) {
+    if (keywords.some((keyword) => lowerItem.includes(keyword))) {
+      return category;
+    }
+  }
+  return 'other';
+};
+
+// 🔍 Scrape Ingredients from the Recipe URL
 const fetchIngredients = async (url) => {
   try {
     const { data } = await axios.get(url);
@@ -22,26 +44,27 @@ const fetchIngredients = async (url) => {
   }
 };
 
+// 🔄 Aggregate Ingredients by Category
 export const fetchGroceryList = async (recipes) => {
-  const ingredientMap = {};
+  const ingredientMap = {
+    produce: [],
+    meat: [],
+    seafood: [],
+    dairy: [],
+    grains: [],
+    spices: [],
+    other: [],
+  };
 
   for (const recipe of recipes) {
     console.log(`🔄 Fetching ingredients for: ${recipe.name}`);
     const ingredients = await fetchIngredients(recipe.link);
 
     ingredients.forEach((item) => {
-      const formattedItem = item.toLowerCase();
-      if (ingredientMap[formattedItem]) {
-        ingredientMap[formattedItem]++;
-      } else {
-        ingredientMap[formattedItem] = 1;
-      }
+      const category = detectCategory(item);
+      ingredientMap[category].push(item);
     });
   }
 
-  // Convert to a list
-  return Object.keys(ingredientMap).map((item) => ({
-    name: item,
-    quantity: ingredientMap[item],
-  }));
+  return ingredientMap;
 };
