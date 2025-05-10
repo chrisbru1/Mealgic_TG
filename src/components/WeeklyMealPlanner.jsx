@@ -1,5 +1,5 @@
 import React from 'react';
-import { MealProvider } from './MealContext';
+import { MealProvider, useMealContext } from './MealContext';
 import CurrentWeekView from './CurrentWeekView';
 import CommunityRecipes from './CommunityRecipes';
 import { Card, CardContent } from './ui/Card';
@@ -15,17 +15,36 @@ const WeeklyMealPlanner = () => {
           <CurrentWeekView />
         </div>
 
-        {/* Saved Meal Plans at the Bottom */}
-        <div className="mt-10">
-          <Card className="bg-gray-700 rounded-lg shadow-lg border border-yellow-500">
-            <CardContent>
-              <h2 className="text-xl font-bold text-yellow-400">📦 Saved Meal Plans (Coming Soon)</h2>
-              <p className="italic text-sm">Manage your saved plans and swipe through them easily.</p>
-            </CardContent>
-          </Card>
+        {/* Save & Export Button */}
+        <div className="mt-10 text-center">
+          <SaveExport />
         </div>
       </div>
     </MealProvider>
+  );
+};
+
+const SaveExport = () => {
+  const { meals } = useMealContext();
+
+  const exportLinks = () => {
+    const links = meals.map((meal) => `${meal.name}: ${meal.link}`).join('\n');
+    const element = document.createElement("a");
+    const file = new Blob([links], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = "WeeklyMealPlan.txt";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  return (
+    <button
+      onClick={exportLinks}
+      className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-400 transition-all"
+    >
+      Save & Export Links
+    </button>
   );
 };
 
