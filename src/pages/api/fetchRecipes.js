@@ -1,4 +1,6 @@
 // src/pages/api/fetchRecipes.js
+console.log("🔍 OpenAI API Key from ENV:", process.env.OPENAI_API_KEY);
+
 import axios from 'axios';
 
 console.log("✅ API Route /api/fetchRecipes Loaded Successfully");
