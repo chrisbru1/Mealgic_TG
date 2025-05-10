@@ -1,62 +1,34 @@
 import axios from 'axios';
 
-const CATEGORIES = {
-  produce: ["lettuce", "tomato", "onion", "garlic", "potato", "carrot", "pepper", "spinach", "broccoli", "avocado"],
-  meat: ["chicken", "beef", "pork", "steak", "turkey", "sausage", "bacon", "ham"],
-  seafood: ["salmon", "tuna", "shrimp", "crab", "lobster", "cod"],
-  dairy: ["milk", "cheese", "butter", "cream", "yogurt", "eggs"],
-  grains: ["rice", "pasta", "bread", "quinoa", "flour", "cereal"],
-  spices: ["salt", "pepper", "cinnamon", "paprika", "oregano", "basil", "garlic powder"]
-};
+export const fetchGroceryList = async (meals) => {
+  try {
+    const prompt = `Here are some recipes: ${JSON.stringify(meals)}. 
+    Generate a grocery list categorized into:
+    - Produce
+    - Meat
+    - Seafood
+    - Dairy
+    - Grains
+    - Spices
+    - Other
+    Include quantities where possible.`;
 
-const detectCategory = (ingredient) => {
-  const lowerItem = ingredient.toLowerCase();
-  for (const [category, keywords] of Object.entries(CATEGORIES)) {
-    if (keywords.some((keyword) => lowerItem.includes(keyword))) {
-      return category;
-    }
-  }
-  return 'other';
-};
-
-// 🔄 Call the Serverless Function
-export const fetchGroceryList = async (recipes) => {
-  const ingredientMap = {
-    produce: [],
-    meat: [],
-    seafood: [],
-    dairy: [],
-    grains: [],
-    spices: [],
-    other: [],
-  };
-
-  for (const recipe of recipes) {
-    console.log(`🔄 Fetching ingredients for: ${recipe.name}`);
-    
-    try {
-      const response = await axios.get(`/api/scrapeIngredients?url=${encodeURIComponent(recipe.link)}`);
-      
-      // 📝 DEBUG: Log the raw response
-      console.log(`✅ Raw response from API:`, response.data);
-
-      const ingredients = response.data.ingredients ?? [];
-      
-      if (!Array.isArray(ingredients) || ingredients.length === 0) {
-        console.warn(`⚠️ No ingredients found for ${recipe.name}`);
-        continue;
+    const response = await axios.post('https://api.openai.com/v1/completions', {
+      prompt,
+      max_tokens: 500,
+      model: 'text-davinci-003'
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
       }
+    });
 
-      ingredients.forEach((item) => {
-        const category = detectCategory(item);
-        ingredientMap[category].push(item);
-      });
+    console.log("🛒 Grocery List Generated: ", response.data.choices[0].text);
+    return JSON.parse(response.data.choices[0].text);
 
-    } catch (error) {
-      console.error(`Failed to fetch ingredients for ${recipe.name}:`, error.message);
-    }
+  } catch (error) {
+    console.error("Failed to generate grocery list:", error.message);
+    return null;
   }
-
-  console.log("🛒 Final Grocery List:", ingredientMap);
-  return ingredientMap;
 };
